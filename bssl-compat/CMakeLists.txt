@@ -79,6 +79,7 @@ add_library(bssl-compat
     source/evp.c
     source/digest.c
     source/cipher.c
+    source/sha.c
     source/crypto.c
 )
 set_source_files_properties(source/evp.c PROPERTIES COMPILE_FLAGS -Wno-deprecated-declarations)
