@@ -63,7 +63,7 @@ static ossl_BIO_METHOD *ossl_BIO_meth_new(const BIO_METHOD *bsslMethod) {
     ossl.ossl_BIO_meth_set_callback_ctrl(osslMethod, nullptr);
   }
   else {
-    bssl_compat_fatal("BIO_METHOD::callback_ctrl is not supported");
+    bssl_compat_fatal("BIO_METHOD::callback_ctrl is not supported" );
   }
 
   return osslMethod;
@@ -105,6 +105,7 @@ static const ossl_BIO_METHOD *b2o(const BIO_METHOD *bsslMethod) {
  * it does also initialise the reference count to 1.
  */
 BIO *BIO_new(const BIO_METHOD *bsslMethod) {
+  bssl_compat_fatal("I'm BIO_new_in_bssl_compat!");	
   return ossl.ossl_BIO_new(b2o(bsslMethod));
 }
 

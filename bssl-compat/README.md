@@ -79,7 +79,8 @@ After clang-tidy has finished, before starting a build without clang-tidy, remov
 
 To build and run with Address Sanitiser, go to the build directory and launch:
 ```
-.../bssl-compat/tools/do-asan.sh 
+cmake -DSANITIZE_ADDRESS=On ..
+make 
 ctest
 ```
 Then, if errors are present, output will be available in the file:
@@ -89,12 +90,13 @@ envoy-openssl/bssl-compat/build/Testing/Temporary/LastTest.log
 
 To build and run with Memory Sanitiser, go to the build directory and launch:
 ```
-.../bssl-compat/tools/do-msan.sh 
+cmake -DSANITIZE_MEMORY=On ..
+make
 ```
 
 To build and run with Thread Sanitiser, go to the build directory and launch:
 ```
-.../bssl-compat/tools/do-tsan.sh 
+cmake -DSANITIZE_THREAD=On .. 
 ctest
 ```
 Then, if errors are present, output will be available in the file:
