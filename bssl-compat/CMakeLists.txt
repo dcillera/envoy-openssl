@@ -50,6 +50,8 @@ add_custom_command(DEPENDS prefixer
 
 add_custom_target(ossl-gen DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/include/ossl.h)
 
+add_subdirectory(rtld-audit)
+
 add_library(bssl-compat STATIC
   source/ASN1_TIME_free.cc
   source/BASIC_CONSTRAINTS_free.cc
