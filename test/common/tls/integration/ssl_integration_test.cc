@@ -353,8 +353,8 @@ TEST_P(SslIntegrationTest, LogPeerIpSanUnsupportedIpVersion) {
 // This test is disabled because it uses the timed_cert_validator which we don't support.
 TEST_P(SslIntegrationTest, DISABLED_AsyncCertValidationSucceeds) {
   // Config client to use an async cert validator which defer the actual validation by 5ms.
-  auto custom_validator_config = std::make_unique<envoy::config::core::v3::TypedExtensionConfig>(
-      envoy::config::core::v3::TypedExtensionConfig());
+  envoy::config::core::v3::TypedExtensionConfig* custom_validator_config =
+      new envoy::config::core::v3::TypedExtensionConfig();
   TestUtility::loadFromYaml(TestEnvironment::substitute(R"EOF(
 name: "envoy.tls.cert_validator.timed_cert_validator"
 typed_config:
@@ -364,7 +364,7 @@ typed_config:
   initialize();
 
   Network::ClientConnectionPtr connection = makeSslClientConnection(
-      ClientSslTransportOptions().setCustomCertValidatorConfig(custom_validator_config.get()));
+      ClientSslTransportOptions().setCustomCertValidatorConfig(custom_validator_config));
   ConnectionStatusCallbacks callbacks;
   connection->addConnectionCallbacks(callbacks);
   connection->connect();
@@ -399,7 +399,7 @@ typed_config:
   initialize();
   Network::Address::InstanceConstSharedPtr address = getSslAddress(version_, lookupPort("http"));
   auto client_transport_socket_factory_ptr = createClientSslTransportSocketFactory(
-      ClientSslTransportOptions().setCustomCertValidatorConfig(custom_validator_config.get()),
+      ClientSslTransportOptions().setCustomCertValidatorConfig(custom_validator_config),
       *context_manager_, *api_);
   Network::ClientConnectionPtr connection = dispatcher_->createClientConnection(
       address, Network::Address::InstanceConstSharedPtr(),
@@ -455,7 +455,7 @@ typed_config:
   initialize();
   Network::Address::InstanceConstSharedPtr address = getSslAddress(version_, lookupPort("http"));
   auto client_transport_socket_factory_ptr = createClientSslTransportSocketFactory(
-      ClientSslTransportOptions().setCustomCertValidatorConfig(custom_validator_config.get()),
+      ClientSslTransportOptions().setCustomCertValidatorConfig(custom_validator_config),
       *context_manager_, *api_);
   Network::ClientConnectionPtr connection = dispatcher_->createClientConnection(
       address, Network::Address::InstanceConstSharedPtr(),
@@ -505,7 +505,7 @@ typed_config:
   initialize();
   Network::Address::InstanceConstSharedPtr address = getSslAddress(version_, lookupPort("http"));
   auto client_transport_socket_factory_ptr = createClientSslTransportSocketFactory(
-      ClientSslTransportOptions().setCustomCertValidatorConfig(custom_validator_config.get()),
+      ClientSslTransportOptions().setCustomCertValidatorConfig(custom_validator_config),
       *context_manager_, *api_);
   Network::ClientConnectionPtr connection = dispatcher_->createClientConnection(
       address, Network::Address::InstanceConstSharedPtr(),
