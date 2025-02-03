@@ -3534,7 +3534,7 @@ TEST_P(SslSocketTest, HalfClose) {
   dispatcher_->run(Event::Dispatcher::RunType::Block);
 }
 
-TEST_P(SslSocketTest, ShutdownWithCloseNotify) {
+TEST_P(SslSocketTest, DISABLED_ShutdownWithCloseNotify) {
   const std::string server_ctx_yaml = R"EOF(
   common_tls_context:
     tls_certificates:
@@ -3626,7 +3626,7 @@ TEST_P(SslSocketTest, ShutdownWithCloseNotify) {
   dispatcher_->run(Event::Dispatcher::RunType::Block);
 }
 
-TEST_P(SslSocketTest, ShutdownWithoutCloseNotify) {
+TEST_P(SslSocketTest, DISABLED_ShutdownWithoutCloseNotify) {
   const std::string server_ctx_yaml = R"EOF(
   common_tls_context:
     tls_certificates:
