@@ -2,7 +2,7 @@
 #include <ossl.h>
 #include <map>
 #include <string>
-
+#include <iostream>
 
 uint64_t o2b(uint64_t e) {
   switch (e) {
@@ -106,6 +106,8 @@ extern "C" const char *ERR_reason_error_string(uint32_t packed_error) {
     { "no shared cipher",                "NO_SHARED_CIPHER"                 },
     { "no suitable signature algorithm", "NO_COMMON_SIGNATURE_ALGORITHMS"   },
     { "certificate verify failed",       "CERTIFICATE_VERIFY_FAILED"        },
+    { "ssl/tls alert handshake failure", "SSLV3_ALERT_HANDSHAKE_FAILURE"    },
+    { "ssl/tls alert certificate expired", "SSLV3_ALERT_CERTIFICATE_EXPIRED"    },
   };
 
   const char *result = ossl.ossl_ERR_reason_error_string(b2o(packed_error));
