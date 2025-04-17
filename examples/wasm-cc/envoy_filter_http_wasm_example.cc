@@ -1,9 +1,13 @@
 // NOLINT(namespace-envoy)
+#include <arpa/inet.h>
+#include <iostream>
+#include <sstream>  
 #include <string>
 #include <string_view>
 #include <unordered_map>
 
 #include "proxy_wasm_intrinsics.h"
+
 
 class ExampleRootContext : public RootContext {
 public:
@@ -48,26 +52,39 @@ void ExampleContext::onCreate() { LOG_WARN(std::string("onCreate " + std::to_str
 
 FilterHeadersStatus ExampleContext::onRequestHeaders(uint32_t, bool) {
   LOG_DEBUG(std::string("onRequestHeaders ") + std::to_string(id()));
-  auto result = getRequestHeaderPairs();
-  auto pairs = result->pairs();
-  LOG_INFO(std::string("headers: ") + std::to_string(pairs.size()));
-  for (auto& p : pairs) {
-    LOG_INFO(std::string(p.first) + std::string(" -> ") + std::string(p.second));
+  auto xffData = getRequestHeader("x-forwarded-for")->toString();
+  LOG_INFO(std::string("x-forwarded-for: ") + xffData);
+ 
+   // Remove blank/tab/newline chars
+  xffData.erase(std::remove_if(xffData.begin(), xffData.end(), ::isspace),
+                               xffData.end());
+  std::cout << "xffData cleaned: " << xffData << std::endl;
+ 
+    // Parse and check XFF comma separated IP addresses
+  std::istringstream istr (xffData);
+  for (std::string ipString; std::getline(istr, ipString, ','); ) {
+    std::cout << "ipString: " << ipString << std::endl;
+    unsigned char buf[sizeof(struct in6_addr)];
+    int s = inet_pton(AF_INET, ipString.c_str(), buf);
+    if( s <= 0) {
+        // Not a valid IPV4, try IPV6
+      s = inet_pton(AF_INET6, ipString.c_str(), buf);
+      if(s <= 0)
+      {
+          // No valid IP address at all
+        std::cout << "XFF IP: BAD" << std::endl;
+
+         // Send a local reply
+        CHECK_RESULT(sendLocalResponse(400, "Bad XFF IP address", "Bad XFF IP address", {}));
+
+        return FilterHeadersStatus::StopIteration;
+      }
+   }
   }
   return FilterHeadersStatus::Continue;
 }
 
 FilterHeadersStatus ExampleContext::onResponseHeaders(uint32_t, bool) {
-  LOG_DEBUG(std::string("onResponseHeaders ") + std::to_string(id()));
-  auto result = getResponseHeaderPairs();
-  auto pairs = result->pairs();
-  LOG_INFO(std::string("headers: ") + std::to_string(pairs.size()));
-  for (auto& p : pairs) {
-    LOG_INFO(std::string(p.first) + std::string(" -> ") + std::string(p.second));
-  }
-  addResponseHeader("X-Wasm-custom", "FOO");
-  replaceResponseHeader("content-type", "text/plain; charset=utf-8");
-  removeResponseHeader("content-length");
   return FilterHeadersStatus::Continue;
 }
 
@@ -80,7 +97,6 @@ FilterDataStatus ExampleContext::onRequestBody(size_t body_buffer_length,
 
 FilterDataStatus ExampleContext::onResponseBody(size_t body_buffer_length,
                                                 bool /* end_of_stream */) {
-  setBuffer(WasmBufferType::HttpResponseBody, 0, body_buffer_length, "Hello, world\n");
   return FilterDataStatus::Continue;
 }
 
