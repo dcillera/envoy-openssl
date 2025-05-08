@@ -323,8 +323,6 @@ ContextImpl::ContextImpl(Stats::Scope& scope, const Envoy::Ssl::ContextConfig& c
   SET_AND_RETURN_IF_NOT_OK(creation_status, creation_status);
 
   
-#if 0
-         // Functions not available in OpenSSL
   // Register stat names based on lists reported by BoringSSL.
   std::vector<const char*> list(SSL_get_all_cipher_names(nullptr, 0));
   SSL_get_all_cipher_names(list.data(), list.size());
@@ -342,7 +340,6 @@ ContextImpl::ContextImpl(Stats::Scope& scope, const Envoy::Ssl::ContextConfig& c
   list.resize(SSL_get_all_version_names(nullptr, 0));
   SSL_get_all_version_names(list.data(), list.size());
   stat_name_set_->rememberBuiltins(list);
-#endif
 
   // As late as possible, run the custom SSL_CTX configuration callback on each
   // SSL_CTX, if set.
