@@ -10,3 +10,24 @@ diff --git a/tcmalloc/BUILD b/tcmalloc/BUILD
  
  licenses(["notice"])
  
+diff --git a/tcmalloc/internal/percpu_rseq_aarch64.S b/tcmalloc/internal/percpu_rseq_aarch64.S
+--- a/tcmalloc/internal/percpu_rseq_aarch64.S
++++ b/tcmalloc/internal/percpu_rseq_aarch64.S
+@@ -230,7 +230,7 @@ TcmallocSlab_Internal_PushBatch:
+   START_RSEQ(TcmallocSlab_Internal_PushBatch)
+   FETCH_SLABS(x8)
+   tbz x8, #TCMALLOC_CACHED_SLABS_BIT, .LTcmallocSlab_Internal_PushBatch_no_capacity
+-  and x8, x8, #~TCMALLOC_CACHED_SLABS_MASK
++  and x8, x8, #~(1 << 63)
+   add x15, x8, x0, LSL #2    /* r15 = hdr */
+   ldrh w9, [x15]             /* r9 = current */
+   ldrh w10, [x15, #2]        /* r10 = end */
+@@ -302,7 +302,7 @@ TcmallocSlab_Internal_PopBatch:
+   START_RSEQ(TcmallocSlab_Internal_PopBatch)
+   FETCH_SLABS(x8)
+   tbz x8, #TCMALLOC_CACHED_SLABS_BIT, .LTcmallocSlab_Internal_PopBatch_no_items
+-  and x8, x8, #~TCMALLOC_CACHED_SLABS_MASK
++  and x8, x8, #~(1 << 63)
+   add x15, x8, x0, LSL #2
+   ldrh w9, [x15]             /* current */
+   ldrh w10, [x3]             /* begin */
