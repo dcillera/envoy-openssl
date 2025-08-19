@@ -32,6 +32,7 @@ def envoy_quiche_platform_impl_cc_library(
         deps = deps,
         repository = "@envoy",
         strip_include_prefix = "quiche/common/platform/default/",
+        tags = ["nofips"],
         visibility = ["//visibility:public"],
     )
 
@@ -47,6 +48,7 @@ def envoy_quiche_platform_impl_cc_test_library(
         deps = deps,
         repository = "@envoy",
         strip_include_prefix = "quiche/common/platform/default/",
+        tags = ["nofips"],
     )
 
 # Used for QUIC libraries
@@ -64,7 +66,7 @@ def envoy_quic_cc_library(
         hdrs = envoy_select_enable_http3(hdrs, "@envoy"),
         repository = "@envoy",
         copts = quiche_copts,
-        tags = tags,
+        tags = ["nofips"] + tags,
         visibility = ["//visibility:public"],
         defines = defines,
         external_deps = external_deps,
@@ -84,7 +86,7 @@ def envoy_quic_cc_test_library(
         hdrs = envoy_select_enable_http3(hdrs, "@envoy"),
         copts = quiche_copts,
         repository = "@envoy",
-        tags = tags,
+        tags = ["nofips"] + tags,
         external_deps = external_deps,
         deps = envoy_select_enable_http3(deps, "@envoy"),
     )

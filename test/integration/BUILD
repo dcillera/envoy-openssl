@@ -1539,19 +1539,16 @@ envoy_cc_test(
     shard_count = 2,
     tags = [
         "cpu:3",
+        "nofips",
     ],
     deps = [
         ":http_protocol_integration_lib",
         "//source/common/http:header_map_lib",
+        "//test/integration/filters:pause_filter_for_quic_lib",
         "//test/test_common:utility_lib",
         "@envoy_api//envoy/config/route/v3:pkg_cc_proto",
         "@envoy_api//envoy/extensions/filters/network/http_connection_manager/v3:pkg_cc_proto",
-    ] + select({
-        "//bazel:disable_http3": [],
-        "//conditions:default": [
-            "//test/integration/filters:pause_filter_for_quic_lib",
-        ],
-    }),
+    ],
 )
 
 envoy_cc_test(
@@ -2613,6 +2610,7 @@ envoy_cc_test(
     shard_count = 16,
     tags = [
         "cpu:4",
+        "nofips",
     ],
     deps = select({
         "//bazel:disable_http3": [],
@@ -2661,7 +2659,6 @@ envoy_cc_test_library(
         "@envoy_api//envoy/extensions/quic/server_preferred_address/v3:pkg_cc_proto",
         "@envoy_api//envoy/extensions/transport_sockets/quic/v3:pkg_cc_proto",
     ],
-    tags = [ "nofips" ],
 )
 
 # TODO(mattklein123): Use target_compatible_with when we switch to Bazel 4.0 instead of multiple
