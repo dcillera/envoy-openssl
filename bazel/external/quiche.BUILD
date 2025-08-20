@@ -4274,9 +4274,9 @@ envoy_quic_cc_library(
         "quiche/quic/core/quic_types.h",
     ],
     external_deps = ["ssl"],
-    repository = "@envoy",
+#    repository = "@envoy",
     tags = ["nofips"],
-    visibility = ["//visibility:public"],
+#    visibility = ["//visibility:public"],
     deps = [
         ":quic_core_crypto_random_lib",
         ":quic_core_error_codes_lib",
