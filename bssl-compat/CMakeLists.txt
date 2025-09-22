@@ -77,7 +77,6 @@ add_library(bssl-compat STATIC
   source/EVP_DigestVerifyFinal.cc
   source/EVP_DigestSignFinal.cc
   source/EVP_get_digestbyname.cc
-  source/EVP_MD_CTX_init.cc
   source/EVP_MD_CTX_move.cc
   source/EVP_parse_public_key.cc
   source/EVP_PKEY_get0_EC_KEY.cc
@@ -440,6 +439,7 @@ target_add_bssl_function(bssl-compat
   EVP_MD_CTX_copy_ex
   EVP_MD_CTX_create
   EVP_MD_CTX_free
+  EVP_MD_CTX_init
   EVP_MD_CTX_new
   EVP_MD_CTX_destroy
   EVP_MD_nid
