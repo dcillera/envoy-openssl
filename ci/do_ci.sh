@@ -497,6 +497,10 @@ case $CI_TARGET in
 
     dev)
         setup_clang_toolchain
+	cd openssl-openssl-3.2.2
+	./config shared no-asm -g3 -ggdb -gdwarf-4 -fno-inline -O0 -fno-omit-frame-pointer
+	make
+	cd ..
         # This doesn't go into CI but is available for developer convenience.
         echo "bazel fastbuild build with tests..."
         echo "Building..."
@@ -676,7 +680,7 @@ case $CI_TARGET in
             test "${BAZEL_BUILD_OPTIONS[@]}" \
             -c fastbuild  \
             --remote_download_minimal \
-            -- "${TEST_TARGETS[@]}"
+            "${TEST_TARGETS[@]}"
         ;;
 
     info)
