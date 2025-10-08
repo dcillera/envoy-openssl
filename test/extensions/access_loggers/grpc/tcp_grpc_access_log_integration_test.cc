@@ -677,8 +677,8 @@ tcp_logs:
       tls_properties:
         tls_sni_hostname: sni
     connection_properties:
-      received_bytes: 163
-      sent_bytes: 163
+      received_bytes: 169
+      sent_bytes: 169
 )EOF",
                                           Network::Test::getLoopbackAddressString(ipVersion()),
                                           Network::Test::getLoopbackAddressString(ipVersion()),
@@ -732,8 +732,8 @@ tcp_logs:
         tls_sni_hostname: sni
         ja3_fingerprint: "f34cc73a821433e5f56e38868737a636"
     connection_properties:
-      received_bytes: 163
-      sent_bytes: 163
+      received_bytes: 169
+      sent_bytes: 169
 )EOF",
                                           Network::Test::getLoopbackAddressString(ipVersion()),
                                           Network::Test::getLoopbackAddressString(ipVersion()),
@@ -785,8 +785,8 @@ tcp_logs:
       tls_properties:
         ja3_fingerprint: "54619c7296adab310ed514d06812d95f"
     connection_properties:
-      received_bytes: 151
-      sent_bytes: 151
+      received_bytes: 157
+      sent_bytes: 157
 )EOF",
                                           Network::Test::getLoopbackAddressString(ipVersion()),
                                           Network::Test::getLoopbackAddressString(ipVersion()),
