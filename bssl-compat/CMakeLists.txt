@@ -7,8 +7,8 @@ if(POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
 endif()
 
-set(OPENSSL_URL      https://github.com/openssl/openssl/archive/refs/tags/openssl-3.0.13.tar.gz)
-set(OPENSSL_URL_HASH e74504ed7035295ec7062b1da16c15b57ff2a03cd2064a28d8c39458cacc45fc)
+set(OPENSSL_URL      https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.3.tar.gz)
+set(OPENSSL_URL_HASH 073f7c905a676586c334e6ae420c7ac4f4082ccb2104e8a369308d10b35ba973)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
