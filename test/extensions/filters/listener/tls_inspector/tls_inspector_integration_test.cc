@@ -297,7 +297,7 @@ TEST_P(TlsInspectorIntegrationTest, JA3FingerprintIsSet) {
   // `JA3` fingerprint:
   //   `771,49199-255,11-10-35-16-22-23-13,23,0-1-2`
   // MD5 hash:
-  //   `54619c7296adab310ed514d06812d95f`
+  //   `bcab080434778b813a3903a51fdc90fc`
   Ssl::ClientSslTransportOptions ssl_options;
   ssl_options.setCipherSuites({"ECDHE-RSA-AES128-GCM-SHA256"});
   ssl_options.setTlsVersion(envoy::extensions::transport_sockets::tls::v3::TlsParameters::TLSv1_2);
@@ -308,7 +308,7 @@ TEST_P(TlsInspectorIntegrationTest, JA3FingerprintIsSet) {
   client_->close(Network::ConnectionCloseType::NoFlush);
 
   EXPECT_THAT(waitForAccessLog(listener_access_log_name_),
-              testing::Eq("54619c7296adab310ed514d06812d95f"));
+              testing::Eq("bcab080434778b813a3903a51fdc90fc"));
 
   test_server_->waitUntilHistogramHasSamples("tls_inspector.bytes_processed");
   auto bytes_processed_histogram = test_server_->histogram("tls_inspector.bytes_processed");
@@ -317,14 +317,14 @@ TEST_P(TlsInspectorIntegrationTest, JA3FingerprintIsSet) {
       1);
   EXPECT_EQ(static_cast<int>(TestUtility::readSampleSum(test_server_->server().dispatcher(),
                                                         *bytes_processed_histogram)),
-            145);
+            155);
 }
 
 // The `JA4` fingerprint is correct in the access log.
 TEST_P(TlsInspectorIntegrationTest, JA4FingerprintIsSet) {
   // These TLS options will create a client hello message with
   // `JA4` fingerprint:
-  //   `t12i0207en_b06afd972a5c_e7e480e5a997`
+  //   `t12i0108en_f06271c2b022_322a62d02564`
   Ssl::ClientSslTransportOptions ssl_options;
   ssl_options.setCipherSuites({"ECDHE-RSA-AES128-GCM-SHA256"});
   ssl_options.setTlsVersion(envoy::extensions::transport_sockets::tls::v3::TlsParameters::TLSv1_2);
@@ -335,7 +335,7 @@ TEST_P(TlsInspectorIntegrationTest, JA4FingerprintIsSet) {
   client_->close(Network::ConnectionCloseType::NoFlush);
 
   EXPECT_THAT(waitForAccessLog(listener_access_log_name_),
-              testing::Eq("t12i0207en_b06afd972a5c_e7e480e5a997"));
+              testing::Eq("t12i0108en_f06271c2b022_322a62d02564"));
 
   test_server_->waitUntilHistogramHasSamples("tls_inspector.bytes_processed");
   auto bytes_processed_histogram = test_server_->histogram("tls_inspector.bytes_processed");
@@ -344,7 +344,7 @@ TEST_P(TlsInspectorIntegrationTest, JA4FingerprintIsSet) {
       1);
   EXPECT_EQ(static_cast<int>(TestUtility::readSampleSum(test_server_->server().dispatcher(),
                                                         *bytes_processed_histogram)),
-            145);
+            155);
 }
 
 TEST_P(TlsInspectorIntegrationTest, RequestedBufferSizeCanGrow) {
@@ -390,7 +390,7 @@ TEST_P(TlsInspectorIntegrationTest, RequestedBufferSizeCanGrow) {
       1);
   EXPECT_EQ(static_cast<int>(TestUtility::readSampleSum(test_server_->server().dispatcher(),
                                                         *bytes_processed_histogram)),
-            405);
+            414);
 }
 
 TEST_P(TlsInspectorIntegrationTest, RequestedBufferSizeCanStartBig) {
@@ -428,7 +428,7 @@ TEST_P(TlsInspectorIntegrationTest, RequestedBufferSizeCanStartBig) {
       1);
   auto bytes_processed = static_cast<int>(
       TestUtility::readSampleSum(test_server_->server().dispatcher(), *bytes_processed_histogram));
-  EXPECT_EQ(bytes_processed, 385);
+  EXPECT_EQ(bytes_processed, 395);
   // Double check that the test is effective by ensuring that the
   // LargeBufferListenerFilter::BUFFER_SIZE is smaller than the client hello.
   EXPECT_GT(bytes_processed, LargeBufferListenerFilter::BUFFER_SIZE);

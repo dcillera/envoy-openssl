@@ -16,6 +16,61 @@
 
 #include "gmock/gmock.h"
 
+class OpenSSLConf {
+  public:
+
+    OpenSSLConf(const char *config) {
+      int fd = mkstemp(m_path.data());
+      if (fd != -1) {
+        FILE* file = fdopen(fd, "w");
+        if (file) {
+          if (fwrite(config, 1, strlen(config), file) == strlen(config)) {
+            fclose(file);
+            if (setenv("OPENSSL_CONF", m_path.c_str(), 1) == 0) {
+              return;
+            }
+          }
+        }
+      }
+      throw std::runtime_error("Failed to set up OPENSSL_CONF");
+    }
+
+    ~OpenSSLConf() {
+      unlink(m_path.c_str());
+    }
+
+private:
+
+    std::string m_path { "/tmp/openssl.conf.XXXXXX" };
+};
+
+// Set OpenSSL Conf at security level 0 so as to make all TLS1 tests be successful with OpenSSL 3.5
+static OpenSSLConf openssl_conf(R"(
+  openssl_conf = openssl_init
+
+  [openssl_init]
+  providers = providers_sect
+  ssl_conf = ssl_sect
+
+  [providers_sect]
+  default = default_sect
+  legacy = legacy_sect
+
+  [default_sect]
+  activate = 1
+
+  [legacy_sect]
+  activate = 1
+
+  [ssl_sect]
+  system_default = system_default_sect
+
+  [system_default_sect]
+  CipherString = DEFAULT:@SECLEVEL=0
+
+  [tls_system_default]
+  MinProtocol = TLSv1
+)");
 namespace Envoy {
 
 namespace {
