@@ -665,6 +665,10 @@ case $CI_TARGET in
         CONFIG="${CONFIG_PREFIX}gcc"
         BAZEL_BUILD_OPTIONS+=("--config=${CONFIG}")
         echo "gcc toolchain configured: ${CONFIG}"
+	# cd openssl-3.5.3
+	# ./config shared no-asm -g3 -ggdb -gdwarf-4 -fno-inline -O0 -fno-omit-frame-pointer
+	# make
+	# cd ..
         echo "bazel fastbuild build with gcc..."
         bazel_envoy_binary_build fastbuild
         echo "Testing ${TEST_TARGETS[*]}"
@@ -672,7 +676,7 @@ case $CI_TARGET in
             test "${BAZEL_BUILD_OPTIONS[@]}" \
             -c fastbuild  \
             --remote_download_minimal \
-            -- "${TEST_TARGETS[@]}"
+            "${TEST_TARGETS[@]}"
         ;;
 
     info)
