@@ -72,6 +72,33 @@ public:
     HeaderData(const envoy::config::route::v3::HeaderMatcher& config,
                Server::Configuration::CommonFactoryContext& factory_context);
 
+<<<<<<< HEAD
+=======
+    // Creates a new present-matcher with an explicit setting of the present field.
+    HeaderDataPresentMatch(const envoy::config::route::v3::HeaderMatcher& config,
+                           bool explicit_present)
+        : name_(config.name()), invert_match_(config.invert_match()),
+          treat_missing_as_empty_(config.treat_missing_header_as_empty()),
+          present_(explicit_present) {}
+
+    bool matchesHeaders(const HeaderMap& request_headers) const override {
+      const auto header_value = getAllOfHeaderAsString(request_headers, name_);
+
+      // If treat_missing_as_empty is false, and the header_value is empty,
+      // return true iff invert_match is the same as present_.
+      if (!header_value.result().has_value() && !treat_missing_as_empty_) {
+        return invert_match_ == present_;
+      }
+
+      return present_ != invert_match_;
+    };
+
+    bool matchesHeadersIndividually(const HeaderMap& request_headers) const override {
+      return matchesHeaders(request_headers);
+    };
+
+  private:
+>>>>>>> b6ba0b2294 (fix multivalue header bypass in rbac)
     const LowerCaseString name_;
     HeaderMatchType header_match_type_;
     std::string value_;
@@ -86,6 +113,42 @@ public:
     bool matchesHeaders(const HeaderMap& headers) const override {
       return HeaderUtility::matchHeaders(headers, *this);
     };
+
+    // Matches each header value individually.
+    bool matchesHeadersIndividually(const HeaderMap& request_headers) const override {
+      const auto header_values = request_headers.get(name_);
+
+      if (header_values.empty()) {
+        if (!treat_missing_as_empty_) {
+          return false;
+        }
+        // treat_missing_as_empty_ is true, match against empty string
+        return specificMatchesHeaders(EMPTY_STRING) != invert_match_;
+      }
+
+      // Validate each header value individually
+      for (size_t i = 0; i < header_values.size(); ++i) {
+        absl::string_view value = header_values[i]->value().getStringView();
+        bool matches = specificMatchesHeaders(value);
+        if (!invert_match_ && matches) {
+          return true;
+        }
+        if (invert_match_ && matches) {
+          return false;
+        }
+      }
+
+      // For normal match: no value matched, return false
+      // For invert_match: no value matched the pattern, return true
+      return invert_match_;
+    }
+
+  protected:
+    // A matcher specific implementation to match the given header_value.
+    virtual bool specificMatchesHeaders(absl::string_view header_value) const PURE;
+    const LowerCaseString name_;
+    const bool invert_match_;
+    const bool treat_missing_as_empty_;
   };
 
   using HeaderDataPtr = std::unique_ptr<HeaderData>;
