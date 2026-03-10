@@ -671,7 +671,7 @@ case $CI_TARGET in
             test "${BAZEL_BUILD_OPTIONS[@]}" \
             -c fastbuild  \
             --remote_download_minimal \
-            -- "${TEST_TARGETS[@]}"
+            "${TEST_TARGETS[@]}"
         ;;
 
     info)

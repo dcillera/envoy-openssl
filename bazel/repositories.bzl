@@ -190,7 +190,8 @@ def envoy_dependencies(skip_targets = []):
     _com_google_googletest()
     _com_google_protobuf()
     _com_github_envoyproxy_sqlparser()
-    _v8()
+ #   _v8()
+    _v8_includes()
     _fast_float()
     _highway()
     _dragonbox()
@@ -743,30 +744,40 @@ def _com_google_protobuf():
         actual = "@com_google_protobuf//upb:reflection",
     )
 
-def _v8():
+# def _v8():
+#    external_http_archive(
+#        name = "v8",
+#        patches = [
+#            "@envoy//bazel:v8.patch",
+#            "@envoy//bazel:v8-ppc64le.patch",
+#        ],
+#        patch_args = ["-p1"],
+#        patch_cmds = [
+#            "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/simdutf/simdutf.h\"!#include \"simdutf.h\"!' {} \\;",
+#            "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/fp16/src/include/fp16.h\"!#include \"fp16.h\"!' {} \\;",
+#            "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/dragonbox/src/include/dragonbox/dragonbox.h\"!#include \"dragonbox/dragonbox.h\"!' {} \\;",
+#            "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/fast_float/src/include/fast_float/!#include \"fast_float/!' {} \\;",
+#        ],
+#        repo_mapping = {
+#            "@abseil-cpp": "@com_google_absl",
+#            "@icu": "@com_github_unicode_org_icu",
+#        },
+#    )
+#
+#    # Needed by proxy_wasm_cpp_host.
+#    native.bind(
+#        name = "wee8",
+#        actual = "@v8//:wee8",
+#    )
+
+def _v8_includes():
     external_http_archive(
         name = "v8",
-        patches = [
-            "@envoy//bazel:v8.patch",
-            "@envoy//bazel:v8-ppc64le.patch",
-        ],
-        patch_args = ["-p1"],
-        patch_cmds = [
-            "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/simdutf/simdutf.h\"!#include \"simdutf.h\"!' {} \\;",
-            "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/fp16/src/include/fp16.h\"!#include \"fp16.h\"!' {} \\;",
-            "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/dragonbox/src/include/dragonbox/dragonbox.h\"!#include \"dragonbox/dragonbox.h\"!' {} \\;",
-            "find ./src ./include -type f -exec sed -i.bak -e 's!#include \"third_party/fast_float/src/include/fast_float/!#include \"fast_float/!' {} \\;",
-        ],
-        repo_mapping = {
-            "@abseil-cpp": "@com_google_absl",
-            "@icu": "@com_github_unicode_org_icu",
-        },
+        build_file = "@envoy//bazel/external:v8_includes.BUILD",
     )
-
-    # Needed by proxy_wasm_cpp_host.
     native.bind(
-        name = "wee8",
-        actual = "@v8//:wee8",
+        name = "wee8_lib_includes_lib",
+        actual = "@v8//:wee8_lib_includes_lib",
     )
 
 def _fast_float():

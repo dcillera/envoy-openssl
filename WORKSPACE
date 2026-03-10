@@ -36,3 +36,18 @@ envoy_dependency_imports()
 load("//bazel:dependency_imports_extra.bzl", "envoy_dependency_imports_extra")
 
 envoy_dependency_imports_extra()
+
+# V8 library
+new_local_repository(
+    name = "v8_lib",
+    build_file = "//:v8_lib.BUILD",
+#    path = "/usr/lib64/"
+    path = "v8_libs",
+)
+
+# Bind wee8 for proxy_wasm_cpp_host
+bind(
+    name = "wee8",
+    actual = "@v8_lib//:wee8",
+)
+

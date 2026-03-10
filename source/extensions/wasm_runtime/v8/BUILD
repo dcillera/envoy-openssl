@@ -12,10 +12,14 @@ envoy_extension_package()
 envoy_cc_extension(
     name = "config",
     srcs = envoy_select_wasm_v8(["config.cc"]),
+    copts = envoy_select_wasm_v8([
+        "-DV8_ENABLE_WEBASSEMBLY",
+    ]),
     deps = envoy_select_wasm_v8([
         "//envoy/registry",
         "//source/extensions/common/wasm:wasm_runtime_factory_interface",
         "@proxy_wasm_cpp_host//:base_lib",
-        "@proxy_wasm_cpp_host//:v8_lib",
+        "@v8_lib//:libv8-pwch-lib",
+        "@v8//:wee8_lib_includes_lib",
     ]),
 )
